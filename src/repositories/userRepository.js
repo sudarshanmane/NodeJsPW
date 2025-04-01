@@ -17,3 +17,8 @@ export const findAllUsers = async () => {
     console.log(error);
   }
 };
+
+export const createUserRepository = async (userObject) => {
+  const doc = await user.create(userObject);
+  return doc;
+};

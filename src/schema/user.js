@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import bcrypt from "bcrypt";
 
 const userSchema = new mongoose.Schema(
   {
@@ -20,18 +21,19 @@ const userSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
       required: [true, "Email is required!"],
-      validate: {
-        validator: function (v) {
-          return (
-            /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-            "Please fill a valid email address".test(v)
-          );
-        },
-        message: "Invalid email format!",
-      },
+      // validate: {
+      //   validator: function (v) {
+      //     return (
+      //       /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+      //       "Please fill a valid email address".test(v)
+      //     );
+      //   },
+      //   message: "Invalid email format!",
+      // },
     },
     password: {
       type: String,
+      select: false,
       required: [true, "Password is required!"],
       minlength: [8, "Password must be at least 8 characters long!"],
       validate: {
@@ -52,6 +54,18 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-const user = mongoose.model("User", userSchema);
+userSchema.pre("save", function (next) {
+  // using sync cause we want to encrypt password before saving to database
 
+  const user = this;
+
+  const SALT = bcrypt.genSaltSync(10);
+  const hashedPassword = bcrypt.hashSync(user.password, SALT);
+
+  user.password = hashedPassword;
+
+  next();
+});
+
+const user = mongoose.model("User", userSchema);
 export default user;

@@ -9,7 +9,7 @@ export async function createPost(req, res, next) {
   // call the service layer to manipulate the data
 
   const post = await createPostService({
-    caption: req.body.caption,
+    caption: req?.body?.caption,
     image: req?.file?.filename,
   });
 

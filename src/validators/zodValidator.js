@@ -1,9 +1,6 @@
 export const validate = (schema) => {
   return async (req, res, next) => {
     try {
-      if (req?.uploadingError) {
-        throw new Error(req?.uploadingError);
-      }
       schema.parse(req.body);
       return next();
     } catch (error) {
@@ -13,7 +10,7 @@ export const validate = (schema) => {
       return res.status(400).json({
         success: false,
         message: "Validation Error",
-        errors: (req?.uploadingError && [req?.uploadingError]) || error.errors,
+        errors: error.errors,
       });
     }
   };
