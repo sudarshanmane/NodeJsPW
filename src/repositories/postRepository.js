@@ -29,22 +29,26 @@ const findAllPosts = async (offset, limit) => {
   try {
     const posts = await post
       .find({})
+      .populate([{ path: "user" }])
       .sort({ createdAt: -1 })
       .skip(offset)
       .limit(limit);
 
     return posts;
   } catch (error) {
-    console.log(error);
+    return error;
   }
 };
 
 const findPostById = async (id) => {
   try {
-    const post = await post.findById(id);
-    return post;
+    const postDoc = await post
+      .findById(id)
+      .populate([{ path: "user", select: "_id" }]);
+
+    return postDoc;
   } catch (error) {
-    console.log(error);
+    return error;
   }
 };
 
@@ -53,7 +57,7 @@ const deletePostById = async (id) => {
     const doc = await post.findByIdAndDelete(id);
     return doc;
   } catch (error) {
-    console.log("error---", error);
+    throw error;
   }
 };
 

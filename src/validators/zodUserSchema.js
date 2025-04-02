@@ -4,6 +4,10 @@ export const zodUserSchema = z.object({
   username: z
     .string({ message: "username is required!" })
     .min(3, "user name must be have least 3 chars!")
+    .regex(
+      /^[a-zA-Z0-9]+$/,
+      "username can oonly contain alphanumeric characters"
+    )
     .toLowerCase(),
   password: z
     .string()

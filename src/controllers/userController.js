@@ -5,7 +5,10 @@ import {
 } from "../services/usersService.js";
 
 export const getAllUsersController = async (req, res, next) => {
-  const docs = await getAllUsersService();
+  const limit = req.query.limit || 10;
+  const offset = req.query.offset || 0;
+
+  const docs = await getAllUsersService(limit, offset);
 
   res.status(200).json({
     success: true,
@@ -23,12 +26,14 @@ export const createUserController = async (req, res, next) => {
       password: body?.password,
     });
 
-    return res.status(201).json({
-      success: true,
-      data: docs,
-    });
+    if (docs)
+      return res.status(201).json({
+        success: true,
+        data: docs,
+      });
   } catch (error) {
     console.log(error);
+
     if (error?.status === 400) {
       return res.status(error.status).json({
         success: false,

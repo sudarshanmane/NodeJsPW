@@ -31,6 +31,11 @@ const userSchema = new mongoose.Schema(
       //   message: "Invalid email format!",
       // },
     },
+    role: {
+      type: "string",
+      default: "user",
+      enum: ["admin", "user"],
+    },
     password: {
       type: String,
       select: false,
@@ -65,6 +70,13 @@ userSchema.pre("save", function (next) {
   user.password = hashedPassword;
 
   next();
+});
+
+userSchema.virtual("posts", {
+  ref: "Post",
+  localField: "_id",
+  foreignField: "user", // it the the field name in the other schema
+  justOne: false,
 });
 
 const user = mongoose.model("User", userSchema);

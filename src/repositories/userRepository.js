@@ -9,9 +9,15 @@ export const findUserByEmail = async (email) => {
   }
 };
 
-export const findAllUsers = async () => {
+export const findAllUsers = async (limit, offset) => {
   try {
-    const docs = await user.find();
+    const docs = await user
+      .find({})
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .skip(offset)
+      .populate([{ path: "posts", select: "caption image" }]);
+
     return docs;
   } catch (error) {
     console.log(error);

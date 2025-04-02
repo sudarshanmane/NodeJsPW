@@ -31,26 +31,33 @@ export async function getAllPosts(req, res, next) {
 }
 
 export async function deletePost(req, res, next) {
-  const postId = req.params.id;
+  try {
+    const postId = req.params.id;
 
-  if (!postId) {
-    res.status(400).json({ success: false, message: "Id is required!" });
-  }
+    if (!postId) {
+      res.status(400).json({ success: false, message: "Id is required!" });
+    }
 
-  const deletePost = await deletePostService(postId);
+    const deletePost = await deletePostService(postId, req.user);
 
-  if (!deletePost) {
-    return res.json({
-      message: "Id not found!",
+    return res.status(200).json({
+      message: "Post Deleted Successfully!",
+      success: true,
+      data: deletePost,
+    });
+  } catch (error) {
+    if (error.status) {
+      return res.status(error.status).json({
+        message: error.message,
+        success: false,
+      });
+    }
+
+    return res.status(400).json({
+      message: error.toString(),
       success: false,
     });
   }
-
-  res.status(200).json({
-    message: "Post Deleted Successfully!",
-    success: true,
-    data: deletePost,
-  });
 }
 
 export async function updatePost(req, res, next) {

@@ -35,3 +35,11 @@ export const isAuthenticated = async (req, res, next) => {
     return res.status(400).json({ success: false, message: "Invalid Token!" });
   }
 };
+
+export const isAdmin = async (req, res, next) => {
+  if (req?.user?.role !== "admin") {
+    return res.status(403).json({ success: false, message: "Unothorized" });
+  }
+
+  next();
+};

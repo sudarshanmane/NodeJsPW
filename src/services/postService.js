@@ -1,3 +1,4 @@
+import post from "../schema/post.js";
 import postRepository from "./../repositories/postRepository.js";
 
 // processing logic implement here
@@ -29,9 +30,29 @@ export const getAllPostsService = async (offset, limit) => {
   return { posts, totalDocuments, totalPages };
 };
 
-export const deletePostService = async (id) => {
-  const doc = await postRepository.deletePostById(id);
-  return doc;
+export const deletePostService = async (id, user) => {
+  try {
+    const postDoc = await postRepository.findPostById(id);
+
+    if (!postDoc) {
+      throw {
+        status: 400,
+        message: "Post not found!",
+      };
+    }
+
+    if (postDoc?.user?.id !== user?.id) {
+      throw {
+        status: 400,
+        message: "Unothorised",
+      };
+    }
+
+    const doc = await postRepository.deletePostById(id);
+    return doc;
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const updatePostService = async (id, updateObject) => {
