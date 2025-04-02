@@ -11,6 +11,7 @@ export async function createPost(req, res, next) {
   const post = await createPostService({
     caption: req?.body?.caption,
     image: req?.file?.filename,
+    user: req?.user?._id,
   });
 
   return res.json({

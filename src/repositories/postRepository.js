@@ -4,12 +4,6 @@ import path from "path";
 
 const createdPost = async (caption, image, user) => {
   try {
-    console.log("newPost", {
-      caption,
-      image,
-      user,
-    });
-
     const newPost = await post.create({
       caption,
       image,
@@ -18,7 +12,7 @@ const createdPost = async (caption, image, user) => {
 
     return newPost;
   } catch (error) {
-    console.log(error);
+    return error;
   }
 };
 

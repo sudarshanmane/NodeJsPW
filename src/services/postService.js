@@ -5,10 +5,14 @@ import postRepository from "./../repositories/postRepository.js";
 export const createPostService = async (createPostObject) => {
   const caption = createPostObject.caption?.trim();
   const image = createPostObject.image;
+  const user = createPostObject.user;
 
-  const post = await postRepository.createdPost(caption, image);
-
-  return post;
+  try {
+    const post = await postRepository.createdPost(caption, image, user);
+    return post;
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const countAllPostService = async () => {

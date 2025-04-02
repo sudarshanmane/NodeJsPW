@@ -8,17 +8,23 @@ import {
 import { upload } from "../config/multerConfig.js";
 import { validate } from "../validators/zodValidator.js";
 import { zodPostSchema } from "../validators/zodPostSchema.js";
+import { isAuthenticated } from "../middlewares/authMiddlewares.js";
 
 const postRouter = express.Router(); // Router Obj to modulerize the routes
 
 postRouter
   .route("/")
-  .post(upload.single("image"), validate(zodPostSchema), createPost)
-  .get(getAllPosts);
+  .post(
+    isAuthenticated,
+    upload.single("image"),
+    validate(zodPostSchema),
+    createPost
+  )
+  .get(isAuthenticated, getAllPosts);
 
 postRouter
   .route("/:id")
-  .delete(deletePost)
-  .put(upload.single("image"), updatePost);
+  .delete(isAuthenticated, deletePost)
+  .put(isAuthenticated, upload.single("image"), updatePost);
 
 export default postRouter;
